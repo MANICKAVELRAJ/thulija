@@ -35,7 +35,7 @@
   <div class="right-content">
 
     <div class="worksheet-title">
-      <span>Canvas Workspace Sheet</span>
+      <span>Canvas Workspace</span>
       <button class="header-toggle" (click)="toggleSidebar()"
         matTooltip="{{ isSidebarCollapsed ? 'Expand sidebar' : 'Expand Canvas Sheet' }}" matTooltipPosition="right">
         <mat-icon>
@@ -90,7 +90,7 @@
           <ng-template #defaultContent>
             <div class="canvas-body-default"
               style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%;">
-              <p>Sample Chart</p>
+              <p>Sample Chart Graph</p>
               <span class="canvas-icon" [innerHTML]="service.getChartSvg(chart.type)"></span>
             </div>
           </ng-template>

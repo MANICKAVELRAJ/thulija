@@ -1,0 +1,789 @@
+:root {
+  --navy: #0a2540;
+  --blue: #1e88e5;
+  --border: #cfd8dc;
+  --bg-light: #f5f5f5;
+}
+
+.workspace-layout {
+  height: 100vh;
+  display: flex;
+  background-color: #b0bec5;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+/* ================= LEFT SIDEBAR ================= */
+.left-sidebar {
+  color: navy;
+  width: auto;
+  padding: 12px;
+  background: #b0bec5;
+  border-right: 2px solid #e3f2fd;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition:
+    width 0.3s ease-in-out,
+    padding 0.3s ease-in-out;
+}
+
+.left-sidebar.collapsed {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.panel-card {
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.panel-title {
+  margin: 0;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  transition: transform 0.35s ease, letter-spacing 0.35s ease;
+}
+
+/* Hover effect */
+.panel-card:hover .panel-title {
+  transform: translateX(10px) scale(2);
+  letter-spacing: 1px;
+}
+
+.styled-tabs {
+  color: navy;
+}
+
+/* ================= WORKSHEET  ================= */
+.worksheet {
+  position: relative;
+  margin: 10px;
+  flex: 1;
+  background: #fafafa;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  overflow: auto;
+}
+
+.worksheet-title {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  display: flex;
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 16px;
+  border-bottom: 1px solid #ddd;
+  background: #eceff1;
+  color: navy;
+  align-items: center;
+  justify-content: space-between;
+  margin: 6px;
+  border-radius: 8px;
+}
+
+.header-toggle {
+  background-color: transparent;
+  border: none;
+  width: 35px;
+  height: 35px;
+  border-radius: 100%;
+}
+
+.header-toggle mat-icon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(1.4);
+  color: white;
+}
+
+.header-toggle:hover {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.header-toggle:hover mat-icon {
+  color: #1976d2;
+  font-size: x-large;
+  background: snow;
+}
+
+.field-list,
+.chart-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+.field-item {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 2px solid #cfd8dc;
+  border-radius: 10px;
+}
+
+/* ================= CHART ITEM ================= */
+.chart-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: grab;
+  user-select: none;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.chart-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.chart-item:active {
+  cursor: grabbing;
+  transform: scale(0.98);
+}
+
+.canvas-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 100%;
+  text-align: center;
+}
+
+/* ================= SVG ICON ================= */
+.chart-icon,
+.preview-icon,
+.property-icon {
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+}
+
+.canvas-icon {
+  margin-bottom: 3rem;
+  display: inline-block;
+  /* allow block content */
+  width: 48px;
+  /* set desired width */
+  height: 48px;
+}
+
+.chart-icon svg,
+.preview-icon svg,
+.property-icon svg {
+  width: 110%;
+  height: 110%;
+}
+
+.canvas-icon svg {
+  width: 100%;
+  /* fill container width */
+  height: 100%;
+  /* fill container height */
+  display: block;
+}
+
+/* ================= DRAG PREVIEW ================= */
+.chart-drag-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: navy;
+  border-radius: 10px;
+  color: #fff;
+}
+
+.chart-drag-preview .chart-svg {
+  fill: #fff;
+}
+
+/* ================= CDK FIX ================= */
+.cdk-drag-placeholder {
+  display: none !important;
+}
+
+.right-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.canvas-item {
+  position: absolute;
+  min-width: 9rem;
+  min-height: 9rem;
+  background: #e3f2fd;
+  border: 1px solid #b0bec5;
+  border-radius: 6px;
+  cursor: grab;
+  overflow: hidden;
+}
+
+.canvas-item:active {
+  cursor: grabbing;
+}
+
+/* ================= HEADER ================= */
+.canvas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  background: #dbe9f4;
+  font-weight: 600;
+  border-bottom: 1px solid #b0bec5;
+  gap: 2px;
+  user-select: none;
+}
+
+/* ================= BODY ================= */
+.canvas-body {
+  display: flex;
+  justify-content: center;
+  /* horizontal center */
+  align-items: center;
+  /* vertical center */
+  width: 100%;
+  height: 100%;
+  /* important */
+  padding: 8px;
+  background: #e3f2fd;
+  user-select: none;
+}
+
+
+/* ================= IMAGE ================= */
+.canvas-chart-image {
+  width: 100px;
+  height: 100%;
+  margin-bottom: 5rem;
+  max-width: 100%;
+  max-height: 6rem;
+  object-fit: contain;
+  /* 🔥 magic line */
+  display: block;
+  user-select: none;
+}
+
+
+/* ================= CLOSE BUTTON ================= */
+
+.close mat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 1px;
+  right: 13px;
+  width: 20px;
+  height: 30px;
+  border-radius: 50%;
+  transform: scale(1);
+}
+
+.close:hover mat-icon {
+  color: red;
+  outline: none;
+  box-shadow: 10px 10px 100px 1px red;
+}
+
+/* ================= BACKDROP ================= */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 90;
+}
+
+/* ================= PANEL ================= */
+.property-panel {
+  position: fixed;
+  top: 0;
+  right: -380px;
+  width: 360px;
+  height: 100vh;
+  background: #ffffff;
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.18);
+  transition: right 0.3s ease;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  font-family: Inter, Roboto, sans-serif;
+}
+
+.property-panel.open {
+  right: 0;
+}
+
+/* ================= HEADER ================= */
+.property-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f8fafc;
+}
+
+
+.clbtn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.clbtn mat-icon {
+  color: black;
+  font-size: 24px;
+}
+
+.clbtn mat-icon:hover {
+  color: red;
+}
+
+.property-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #263238;
+}
+
+.header-left {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: #78909c;
+}
+
+/* ================= CONTENT ================= */
+.property-content {
+  padding: 16px 18px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.property-section {
+  margin-bottom: 20px;
+}
+
+.property-section h4 {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #455a64;
+  text-transform: uppercase;
+}
+
+/* ================= PROPERTY PANEL BASE ================= */
+
+.property-panel {
+  background: #f7f9fc;
+}
+
+/* COMMON SECTION CARD */
+.property-section {
+  padding: 14px 16px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+  border-left: 6px solid transparent;
+  transition: transform 0.2s ease;
+}
+
+.property-section:hover {
+  transform: translateY(-1px);
+}
+
+/* ================= SECTION COLORS ================= */
+
+/* 1️⃣ POSITION */
+.property-section:nth-of-type(1) {
+  background: #e3f2fd;
+  /* light blue */
+  border-left-color: #1e88e5;
+}
+
+/* 2️⃣ SIZE */
+.property-section:nth-of-type(2) {
+  background: #e8f5e9;
+  /* light green */
+  border-left-color: #43a047;
+}
+
+/* 3️⃣ DATA FIELDS */
+.property-section:nth-of-type(3) {
+  background: #fff3e0;
+  /* light orange */
+  border-left-color: #fb8c00;
+}
+
+/* ================= HEADINGS ================= */
+
+.property-section h4 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.property-section h4 mat-icon {
+  font-size: 18px;
+}
+
+/* ================= FORM ROW ================= */
+
+.property-section .row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.property-section label {
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+/* INPUTS */
+.property-section input,
+.property-section select {
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid #cfd8dc;
+  background: #fff;
+  font-size: 13px;
+}
+
+.property-section input:focus,
+.property-section select:focus {
+  outline: none;
+  border-color: #1e88e5;
+}
+
+/* ================= FOOTER ================= */
+.property-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 12px 16px;
+  border-top: 1px solid #e0e0e0;
+  background: #f9fbfd;
+}
+
+/* ================= COMMON BUTTON ================= */
+.property-footer .btn {
+  min-width: 90px;
+  padding: 7px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* ================= CANCEL BUTTON ================= */
+.property-footer .btn.cancel {
+  background: #eceff1;
+  color: #37474f;
+}
+
+.property-footer .btn.cancel:hover {
+  background: #cfd8dc;
+}
+
+.property-footer .btn.cancel:active {
+  transform: scale(0.97);
+}
+
+/* ================= SAVE BUTTON ================= */
+.property-footer .btn.save {
+  background: linear-gradient(135deg,
+      #0d47a1,
+      #1565c0,
+      #42a5f5);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(21, 101, 192, 0.35);
+}
+
+.property-footer .btn.save:hover {
+  opacity: 0.92;
+  box-shadow: 0 6px 14px rgba(21, 101, 192, 0.45);
+}
+
+.property-footer .btn.save:active {
+  transform: scale(0.97);
+}
+
+
+
+/* ================= WORKSHEET TITLE ================= */
+.worksheet-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e0e0e0;
+  font-weight: 600;
+}
+
+/* Toggle button */
+.header-toggle {
+  background: #1976d2;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.header-toggle mat-icon {
+  font-size: 20px;
+}
+
+/* ================= UPLOAD ROW ================= */
+.upload-row {
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+/* ================= UPLOAD BUTTON ================= */
+.btn.upload {
+  background: #f5f7fa;
+  color: #1565c0;
+  border: 1px dashed #1565c0;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn.upload:hover {
+  background: #e3f2fd;
+  transform: scale(1.03);
+}
+
+/* ================= UPLOAD PROGRESS ================= */
+.row small {
+  font-size: 12px;
+  color: #777;
+}
+
+/* ================= SELECT ================= */
+.row select {
+  flex: 1;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* hover */
+.row select:hover {
+  border-color: #1565c0;
+}
+
+/* focus */
+.row select:focus {
+  outline: none;
+  border-color: #1565c0;
+  box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.15);
+}
+
+/* ================= OPTION ================= */
+.row select option {
+  font-size: 13px;
+  padding: 6px;
+}
+
+/* ================= DISABLED ================= */
+.row select:disabled {
+  background: #f2f2f2;
+  cursor: not-allowed;
+}
+
+/* DATA FIELDS HEADER */
+.data-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+/* smaller upload button */
+.btn.upload.small {
+  padding: 4px 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* icon size */
+.btn.upload.small mat-icon {
+  font-size: 18px;
+}
+
+/* ================= FLOATING UPLOAD BUTTON ================= */
+
+.upload-fab {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+
+  background: linear-gradient(135deg,
+      #1565c0,
+      #42a5f5);
+
+  box-shadow:
+    0 6px 14px rgba(21, 101, 192, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: all 0.25s ease;
+  overflow: hidden;
+}
+
+/* hover lift */
+.upload-fab:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow:
+    0 10px 22px rgba(21, 101, 192, 0.6);
+}
+
+/* active press */
+.upload-fab:active {
+  transform: scale(0.95);
+}
+
+/* ================= ICONS ================= */
+
+.upload-fab mat-icon {
+  position: absolute;
+  font-size: 20px;
+  color: #fff;
+  transition: all 0.25s ease;
+}
+
+/* plus icon (default) */
+.upload-fab .icon-plus {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+/* upload icon (hidden initially) */
+.upload-fab .icon-upload {
+  opacity: 0;
+  transform: translateY(8px) scale(0.8);
+}
+
+/* ================= HOVER ANIMATION ================= */
+
+.upload-fab:hover .icon-plus {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.5);
+}
+
+.upload-fab:hover .icon-upload {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ================= OPTIONAL GLOW ================= */
+
+.upload-fab::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+      rgba(66, 165, 245, 0.35),
+      transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.upload-fab:hover::after {
+  opacity: 1;
+}
+
+/* ================= UPLOAD STATUS ================= */
+
+.upload-status {
+  margin-top: 6px;
+  opacity: 1;
+  transition: opacity 0.6s ease;
+}
+
+.upload-status small {
+  font-size: 12px;
+  letter-spacing: 0.3px;
+  color: green;
+}
+
+/* ================= SUCCESS STATE ================= */
+
+.upload-status.success {
+  color: #2e7d32;
+  /* Material green */
+  font-weight: 600;
+  animation: uploadBlink 0.8s ease-in-out 2;
+}
+
+/* ================= BLINK ANIMATION ================= */
+
+@keyframes uploadBlink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.2;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.field-preview {
+  width: 100%;
+  min-height: 40px;
+  margin-top: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+  background: #f5f7fa;
+  border: 1px dashed #cfd8dc;
+  border-radius: 4px;
+  resize: none;
+}

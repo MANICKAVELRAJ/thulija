@@ -1,0 +1,212 @@
+<div class="workspace-layout">
+
+  <!-- ========== LEFT SIDEBAR : ANALYTICS ========== -->
+  <div class="left-sidebar" [class.collapsed]="isSidebarCollapsed">
+
+    <div class="analytics-panel">
+      <div class="panel-card accent">
+        <h3 class="panel-title">Analytics</h3>
+      </div>
+
+      <div class="chart-list" cdkDropList id="chartList" [cdkDropListData]="service.chartTypes"
+        [cdkDropListConnectedTo]="['canvasList']" cdkDropListSortingDisabled>
+
+        <div class="chart-item" *ngFor="let chart of service.chartTypes" cdkDrag [cdkDragData]="chart">
+
+          <div class="chart-icon" [innerHTML]="service.getChartSvg(chart.type)">
+          </div>
+
+          <span class="chart-name">{{ chart.name }}</span>
+
+          <ng-template cdkDragPreview>
+            <div class="chart-drag-preview">
+              <span class="preview-icon" [innerHTML]="service.getChartSvg(chart.type)">
+              </span>
+              <span>{{ chart.name }}</span>
+            </div>
+          </ng-template>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== RIGHT CONTENT ========== -->
+  <div class="right-content">
+
+    <div class="worksheet-title">
+      <span>Canvas Sheet</span>
+      <button class="header-toggle" (click)="toggleSidebar()"
+        matTooltip="{{ isSidebarCollapsed ? 'Expand sidebar' : 'Expand Canvas Sheet' }}" matTooltipPosition="right">
+        <mat-icon>
+          {{ isSidebarCollapsed ? 'menu' : 'fullscreen' }}
+        </mat-icon>
+      </button>
+    </div>
+
+    <div class="worksheet" cdkDropList id="canvasList" [cdkDropListConnectedTo]="['chartList']"
+      (cdkDropListDropped)="dropOnCanvas($event)">
+
+      <div class="canvas-item" *ngFor="let chart of service.canvasCharts; let i = index"
+        [style.left.px]="propertyPanelOpen && selectedItem?.id === chart.id ? editableItem?.x : chart.x"
+        [style.top.px]="propertyPanelOpen && selectedItem?.id === chart.id ? editableItem?.y : chart.y"
+        [style.width.px]="propertyPanelOpen && selectedItem?.id === chart.id ? editableItem?.width : chart.width"
+        [style.height.px]="propertyPanelOpen && selectedItem?.id === chart.id ? editableItem?.height : chart.height"
+        [style.zIndex]="chart.zIndex" (mousedown)="startMove($event, i)" (dblclick)="openPropertyPanel(chart)">
+
+
+        <div class="canvas-header">
+          {{ chart.name }}
+          <span class="close" (click)="removeChart(chart.id); $event.stopPropagation()">
+            <mat-icon>close</mat-icon></span>
+        </div>
+
+        <div class="canvas-body"
+          style="overflow-y: auto; align-items: flex-start; justify-content: flex-start; padding: 10px;">
+          <ng-container *ngIf="chart.xField || chart.yField; else defaultContent">
+            <div style="font-size: 13px; width: 100%; display: flex; flex-direction: column; gap: 8px;">
+
+              <!-- X VALUES LIST -->
+              <div *ngIf="chart.xField" style="text-align: left;">
+                <strong style="color: #1565c0; border-bottom: 1px solid #bbdefb; display: block; margin-bottom: 4px;">X:
+                  {{ chart.xField }}</strong>
+                <div *ngFor="let row of chart.data" style="padding-left: 8px; font-family: monospace;">
+                  • {{ row[chart.xField] }}
+                </div>
+              </div>
+
+              <!-- Y VALUES LIST -->
+              <div *ngIf="chart.yField" style="text-align: left;">
+                <strong style="color: #2e7d32; border-bottom: 1px solid #c8e6c9; display: block; margin-bottom: 4px;">Y:
+                  {{ chart.yField }}</strong>
+                <div *ngFor="let row of chart.data" style="padding-left: 8px; font-family: monospace;">
+                  • {{ row[chart.yField] }}
+                </div>
+              </div>
+
+            </div>
+          </ng-container>
+
+          <ng-template #defaultContent>
+            <div class="canvas-body-default"
+              style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%;">
+              <p>Sample Chart</p>
+              <span class="canvas-icon" [innerHTML]="service.getChartSvg(chart.type)"></span>
+            </div>
+          </ng-template>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== BACKDROP ========== -->
+  <div class="backdrop" *ngIf="propertyPanelOpen" (click)="cancelChanges()">
+  </div>
+
+  <!-- ========== PROPERTY PANEL ========== -->
+  <div class="property-panel" [class.open]="propertyPanelOpen" (click)="$event.stopPropagation()">
+    <div class="property-header">
+      <div class="header-left"> <span class="property-icon" [innerHTML]="service.getChartSvg(selectedItem?.type)">
+        </span>
+        <div>
+          <h3>{{ selectedItem?.name }}</h3> <span class="subtitle">Chart Properties</span>
+        </div>
+      </div> <button class="clbtn" (click)="cancelChanges()"> <mat-icon>close</mat-icon> </button>
+    </div>
+    <input type="file" hidden #fileInput accept=".json,.xlsx,.xls" (change)="onFileSelected($event)" />
+
+
+    <div class="property-content" *ngIf="editableItem">
+
+      <!-- POSITION -->
+      <div class="property-section">
+        <h4><mat-icon>map</mat-icon>Position</h4>
+        <div class="row">
+          <label>X</label>
+          <input type="number" [(ngModel)]="editableItem.x" (ngModelChange)="checkOverlapLive(editableItem)">
+        </div>
+        <div class="row">
+          <label>Y</label>
+          <input type="number" [(ngModel)]="editableItem.y" (ngModelChange)="checkOverlapLive(editableItem)">
+        </div>
+      </div>
+
+      <!-- SIZE -->
+      <div class="property-section">
+        <h4>Size</h4>
+        <div class="row">
+          <label>Width</label>
+          <input type="number" [(ngModel)]="editableItem.width">
+        </div>
+        <div class="row">
+          <label>Height</label>
+          <input type="number" [(ngModel)]="editableItem.height">
+        </div>
+      </div>
+
+      <div class="property-section data-section">
+
+        <!-- HEADER ROW -->
+        <div class="data-header">
+          <h4>Data Fields</h4>
+
+          <button class="upload-fab" (click)="fileInput.click()" matTooltip="Upload JSON / Excel"
+            matTooltipPosition="left">
+
+            <mat-icon class="icon-plus">add</mat-icon>
+            <mat-icon class="icon-upload">upload</mat-icon>
+          </button>
+        </div>
+
+        <!-- hidden file input -->
+        <input type="file" hidden #fileInput accept=".json,.xlsx,.xls" (change)="onFileSelected($event)" />
+
+        <!-- UPLOAD PROGRESS -->
+        <div class="row upload-status" *ngIf="uploadProgress > 0" [class.success]="uploadProgress === 100">
+          <small *ngIf="uploadProgress < 100">Uploading... {{ uploadProgress }}%</small>
+          <small *ngIf="uploadProgress === 100">Upload Completed!</small>
+        </div>
+
+        <!-- TABLE NAME -->
+        <div class="row" *ngIf="!isCustomDataUploaded">
+          <label>Table Name</label>
+          <select [(ngModel)]="editableItem.tableId" (ngModelChange)="onTableSelect($event)"
+            [disabled]="isCustomDataUploaded">
+            <option value="">Choose Table</option>
+            <option *ngFor="let p of service.pages$ | async" [value]="p.id">
+              {{ p.table_name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- X FIELD -->
+        <div class="row">
+          <label>X Field</label>
+          <select [(ngModel)]="editableItem.xField" (ngModelChange)="onXFieldChange($event)">
+            <option value="">-- Select Field --</option>
+            <option *ngFor="let field of editableItem.fields" [value]="field">
+              {{ field }}
+            </option>
+          </select>
+        </div>
+        <!-- Y FIELD -->
+        <div class="row">
+          <label>Y Field</label>
+          <select [(ngModel)]="editableItem.yField" (ngModelChange)="onYFieldChange($event)">
+            <option value="">-- Select Field --</option>
+            <option *ngFor="let field of editableItem.fields" [value]="field">
+              {{ field }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="property-footer">
+      <button class="btn cancel" (click)="cancelChanges()">Cancel</button>
+      <button class="btn save" (click)="saveChanges()">Save</button>
+    </div>
+
+  </div>
+</div>
